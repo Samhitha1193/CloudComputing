@@ -1,0 +1,163 @@
+<aura:component controller="ConfigurationScreen">
+<aura:attribute name="mdtObject" type="ConfigurationScreen.Configurators"/>
+<aura:attribute name="buttons" type="ComplianceConfigurator__mdt[]"/> 
+<aura:attribute name="repeats" type="String[]" default="Daily,Every Weekday (M-F),Every Monday,Every Tuesday,Every Wednesday,Every Thursday,Every Friday,Every Saturday,Every Sunday"/>
+<aura:attribute name="hours" type="String[]" default="00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23"/>
+<aura:attribute name="minutes" type="String[]" default="00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59"/>
+<aura:attribute name="repeatsValue" type="String"/>
+<aura:attribute name="hoursValue" type="String"/>
+<aura:attribute name="minutesValue" type="String"/>
+<aura:attribute name="pillValue" type="String" default="Schedule"/>
+<aura:attribute name="runDisable" type="String"/>
+
+<aura:registerEvent name="saveRecord" type="c:SaveSchedulerEvt"/>
+<aura:registerEvent name="saveScheduler" type="c:SaveSchedulerEvt"/>
+<aura:registerEvent name="runRecord" type="c:saveRecordEvt"/>
+<aura:registerEvent name="deleteScheduler" type="c:saveRecordEvt"/>
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+<tr class="slds-hint-parent">
+      <td role="gridcell" class="slds-cell-shrink">
+          <span class="slds-row-number slds-text-body--small slds-text-color--weak slds-m-left--large"></span>
+        </td>
+      <td role="gridcell">
+        <div class="slds-truncate slds-m-left--medium" title="{!v.mdtObject.configName}">{!v.mdtObject.configName}</div>
+      </td>
+      <td role="gridcell">
+      <div>
+    <ui:inputSelect label="" value="{!v.mdtObject.configEnabled}" class="slds-input--medium ">    
+        <aura:iteration items="{!v.mdtObject.configEnabledPicklist}" var="options">
+          <ui:inputSelectOption text="{!options}" label="{!options}"/>
+        </aura:iteration>
+    </ui:inputSelect>
+ </div>
+      </td>
+     <td role="gridcell slds-text-align--right">
+        <ui:button class="slds-button slds-button--brand slds-m-left--large slds-hide" aura:id="saveButton" press="{!c.saveRecord}">Save</ui:button>
+      </td>
+      <td role="gridcell">
+        <ui:button class="slds-button slds-button--neutral slds-hide disabled" aura:id="runButton" press="{!c.showRunConfirm}">Run</ui:button>
+      </td>    
+      <td role="gridcell" class="col-width">
+        <div class="slds-pill_container slds-hide disabled" aura:id="schButton">
+  <span class="slds-pill green"><a href="javascript:void(0);" class="slds-pill__label green disabled" title="{!v.pillValue}" onclick="{!c.showScheduleModal}" aura:id="schAnchor">{!v.pillValue}</a>
+    <button class="slds-button slds-button--icon slds-pill__remove disabled" aura:id="schClose" title="Remove">
+      <lightning:buttonIcon iconName="utility:close" class="slds-button--icon-xx-small" variant="border-filled" onclick="{!c.showDeleteConfirm}" alternativeText="Close window."/>
+      <span class="slds-assistive-text">Remove</span>
+    </button>
+  </span>
+</div>
+</td>
+ <td role="gridcell">
+        <ui:button class="slds-button slds-button--neutral slds-hide" press="">Run</ui:button>
+ </td>
+    </tr>
+
+<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-hide" aura:id="confirmsavedialog">
+  <div class="slds-modal__container">
+    <div class="slds-modal__header slds-modal__header slds-modal__header--empty">
+      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+      <lightning:buttonIcon iconName="utility:close" variant="border" onclick="{!c.hideSaveConfirm}" alternativeText="Close window."/>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+    </div>
+    <div class="slds-modal__content slds-p-around--medium slds-text-align--center">
+      <p><b>Are you sure want to Disable the feature? This action will delete the existing schedule!</b></p>
+      
+      <div class="slds-align--absolute-center slds-m-top--large">
+      <ui:button class="slds-button slds-button--brand" press="{!c.saveRecordFrmModal}">Yes</ui:button>
+      <ui:button class="slds-button slds-button--neutral" press="{!c.hideSaveConfirm}">No</ui:button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-hide" aura:id="confirmrundialog">
+  <div class="slds-modal__container">
+    <div class="slds-modal__header slds-modal__header slds-modal__header--empty">
+      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+      <lightning:buttonIcon iconName="utility:close" variant="border" onclick="{!c.hideRunConfirm}" alternativeText="Close window."/>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+    </div>
+    <div class="slds-modal__content slds-p-around--medium slds-text-align--center">
+      <p><b>Are you sure want to continue?</b></p>
+      
+      <div class="slds-align--absolute-center slds-m-top--large">
+      <ui:button class="slds-button slds-button--brand" press="{!c.runRecord}">Confirm</ui:button>
+      <ui:button class="slds-button slds-button--neutral" press="{!c.hideRunConfirm}">Cancel</ui:button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <div role="dialog" tabindex="-1" aria-labelledby="header43" aria-hidden="true" class="slds-modal slds-fade-in-hide" aura:id="schmodaldialog">
+  <div class="slds-modal__container">
+    <div class="slds-modal__header">
+      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+    <lightning:buttonIcon iconName="utility:close" variant="border" onclick="{!c.hideScheduleModal}" alternativeText="Close window."/>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+      <h2 id="header43" class="slds-text-heading--medium">Schedule for {!v.mdtObject.configName}</h2> 
+    </div>
+
+    <div class="slds-modal__content slds-p-around--medium">
+    <div class="slds-float--right">
+      <ui:button class="slds-button slds-button--neutral disabled" aura:id="schdialogdelete" press="{!c.deleteScheduler}">Delete</ui:button>
+      </div>
+    <div class="slds-align--absolute-center slds-picklist slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open slds-m-bottom--xx-large">
+      <ui:inputSelect label="Repeats:" value="{!v.repeatsValue}" class="slds-input--medium ">    
+            <ui:inputSelectOption text="none" label="-None-" />
+          <aura:iteration items="{!v.repeats}" var="objs">
+            <ui:inputSelectOption text="{!objs}" label="{!objs}"/>
+          </aura:iteration>
+      </ui:inputSelect>
+    </div>
+
+    <div class="slds-align--absolute-center slds-picklist slds-dropdown-trigger slds-dropdown-trigger--click slds-is-open slds-m-top--large slds-m-bottom--xx-large">
+      <div>
+      <ui:inputSelect label="Hours:" value="{!v.hoursValue}" class="slds-input--medium ">
+          <aura:iteration items="{!v.hours}" var="objs">
+            <ui:inputSelectOption text="{!objs}" label="{!objs}"/>
+          </aura:iteration>
+      </ui:inputSelect>
+      </div>
+      <div class="slds-m-left--xx-large">
+      <ui:inputSelect label="Minutes:" value="{!v.minutesValue}" class="slds-input--medium">    
+          <aura:iteration items="{!v.minutes}" var="objs">
+            <ui:inputSelectOption text="{!objs}" label="{!objs}"/>
+          </aura:iteration>
+      </ui:inputSelect>
+      </div>
+    </div>
+
+      <div class="slds-align--absolute-center slds-m-top--large">
+      <ui:button class="slds-button slds-button--brand" press="{!c.saveScheduler}">Save</ui:button>
+      <ui:button class="slds-button slds-button--neutral" press="{!c.hideScheduleModal}">Cancel</ui:button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div role="dialog" tabindex="-1" class="slds-modal slds-fade-in-hide" aura:id="confirmdeletedialog">
+  <div class="slds-modal__container">
+    <div class="slds-modal__header slds-modal__header slds-modal__header--empty">
+      <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close">
+      <lightning:buttonIcon iconName="utility:close" variant="border" onclick="{!c.hideDeleteConfirm}" alternativeText="Close window."/>
+        <span class="slds-assistive-text">Close</span>
+      </button>
+    </div>
+    <div class="slds-modal__content slds-p-around--medium slds-text-align--center">
+      <p><b>Are you sure want to delete the schedule?</b></p>
+      
+      <div class="slds-align--absolute-center slds-m-top--large">
+      <ui:button class="slds-button slds-button--brand" press="{!c.deletePillScheduler}">Yes</ui:button>
+      <ui:button class="slds-button slds-button--neutral" press="{!c.hideDeleteConfirm}">No</ui:button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slds-backdrop slds-backdrop--hide" aura:id="backdropId"></div>
+</aura:component>

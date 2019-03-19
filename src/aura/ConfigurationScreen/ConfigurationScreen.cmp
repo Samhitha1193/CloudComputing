@@ -1,0 +1,23 @@
+<aura:component controller="ConfigurationScreen" implements="force:appHostable">
+
+<aura:attribute name="mdtObjects" type="ConfigurationScreen.Configurators[]"/>
+
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<aura:handler name="saveRecord" event="c:SaveSchedulerEvt" action="{!c.saveRecord}"/>
+<aura:handler name="saveScheduler" event="c:SaveSchedulerEvt" action="{!c.saveScheduler}"/>
+<aura:handler name="runRecord" event="c:saveRecordEvt" action="{!c.runRecord}"/>
+<aura:handler name="deleteScheduler" event="c:saveRecordEvt" action="{!c.deleteScheduler}"/>
+
+<lightning:spinner aura:id="spinner"/>
+<div class="slds-page-header">
+<div class="slds-text-heading--small slds-text-align--center slds-text-color--weak">Compliance Setup</div>
+</div>
+
+<table class="slds-table slds-table--fixed-layout slds-max-medium-table--stacked slds-no-row-hover slds-m-top--xx-large slds-m-left--xxx-small" role="grid">
+<tbody>
+    <aura:iteration items="{!v.mdtObjects}" var="Objs">
+    <c:ConfigurationScreenData mdtObject="{!Objs}"/>
+    </aura:iteration>
+</tbody>
+</table>
+</aura:component>

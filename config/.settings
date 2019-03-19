@@ -1,0 +1,15 @@
+{
+    "projectName": "CloudComputing",
+    "username": "ebharath94@devorg1.com",
+    "id": "0c31e3e0-49e7-11e9-a6c4-d7d6f91ebb50",
+    "namespace": "",
+    "orgType": "developer",
+    "loginUrl": "https://login.salesforce.com/",
+    "instanceUrl": "https://cld-dev-ed.my.salesforce.com",
+    "workspace": "C:\\Users\\ebhar\\Documents\\SalesforceProjects",
+    "subscription": [
+        "ApexClass",
+        "AuraDefinitionBundle",
+        "StaticResource"
+    ]
+}

@@ -1,0 +1,14 @@
+.THIS .green{
+    color: white;
+    background-color: green;
+}
+
+.THIS .col-width{
+    width: 110px;
+}
+
+.THIS .disabled {
+  opacity: 0.50;
+  pointer-events: none;
+  cursor: default;
+}

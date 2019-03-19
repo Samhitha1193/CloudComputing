@@ -1,0 +1,6 @@
+<aura:event type="COMPONENT">
+<aura:attribute name="record" type="String"/>
+<aura:attribute name="repeats" type="String"/>
+<aura:attribute name="hours" type="String"/>
+<aura:attribute name="minutes" type="String"/>
+</aura:event>
